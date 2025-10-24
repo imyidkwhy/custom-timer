@@ -1,0 +1,113 @@
+:root {
+    --spotify-black: #121212;
+    --spotify-dark-gray: #181818;
+    --spotify-light-gray: #282828;
+    --spotify-green: #1DB954; 
+    --text-white: #FFFFFF;
+    --text-light: #B3B3B3;
+}
+
+body {
+    font-family: 'Arial', sans-serif; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--spotify-black);
+    color: var(--text-white);
+    margin: 0;
+}
+
+.container {
+    background: var(--spotify-dark-gray);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    width: 90%;
+    max-width: 450px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    color: var(--text-light);
+}
+
+.logo-dot {
+    height: 8px;
+    width: 8px;
+    background-color: var(--spotify-green);
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+h1 {
+    font-size: 1.2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.task-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--text-white);
+    margin: 15px 0 30px;
+}
+
+.timer-display {
+    font-family: monospace; 
+    font-size: 4.5em;
+    font-weight: 900;
+    margin-bottom: 30px;
+    color: var(--spotify-green); 
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    border-radius: 500px; 
+    transition: transform 0.1s, opacity 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.primary-btn {
+    background-color: var(--spotify-green);
+    color: var(--spotify-black);
+}
+
+.primary-btn:hover {
+    background-color: #1ed760;  
+}
+
+.secondary-btn {
+    background-color: var(--spotify-light-gray);
+    color: var(--text-white);
+    margin-left: 10px;
+}
+
+.secondary-btn:hover {
+    background-color: #383838;
+}
+
+.next-task-info {
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: var(--text-light);
+    min-height: 20px;
+}

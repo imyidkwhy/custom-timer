@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Таймер</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <span class="logo-dot"></span>
+             <h1>Таймер с паттерном</h1>
+        </div>
+        
+        <h2 id="current-task" class="task-title"></h2>  
+        <div id="timer-display" class="timer-display">00:00:00</div>
+        
+        <div class="controls">
+            <button id="start-button" class="btn primary-btn">СТАРТ РУТИНЫ</button>
+            <button id="reset-button" class="btn secondary-btn" style="display:none;">СБРОС</button>
+        </div>
+        
+        <p class="next-task-info" id="next-task-info"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
