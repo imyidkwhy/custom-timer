@@ -15,11 +15,13 @@ let currentIndex = 0;
 let timeRemaining = 0;
 let isRunning = false;
 let timerInterval = null;
+let startTime = 0;
 
 const switchSound = new Audio('ding.mp3');
 const finishSound = new Audio('finish.mp3');
 
 function formatTime(seconds) {
+    seconds = Math.max(0, seconds);
     const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
     const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
     const s = String(seconds % 60).padStart(2, '0');
@@ -40,8 +42,9 @@ function updateDisplay() {
 function nextTask() {
     currentIndex++;
     if (currentIndex < routine.length) {
-        timeRemaining = routine[currentIndex].duration;
-        updateDisplay();
+        timeRemaining = 0; 
+        pauseTimer(); 
+        startTimer();
     } else {
         clearInterval(timerInterval);
         isRunning = false;
@@ -61,14 +64,24 @@ function startTimer() {
     switchSound.load();
     finishSound.load();
 
-    if (timeRemaining === 0) {
+    if (timeRemaining <= 0) {
         timeRemaining = routine[currentIndex].duration;
     }
+    
+    const durationInMs = routine[currentIndex].duration * 1000;
+    const remainingInMs = timeRemaining * 1000;
+    
+    startTime = Date.now() - (durationInMs - remainingInMs); 
+    
     updateDisplay();
 
     timerInterval = setInterval(() => {
-        timeRemaining--;
-
+        
+        const timePassed = Math.floor((Date.now() - startTime) / 1000);
+        const actualTimeRemaining = Math.max(0, routine[currentIndex].duration - timePassed);
+        
+        timeRemaining = actualTimeRemaining;
+        
         if (timeRemaining <= 0) {
             if (currentIndex < routine.length - 1) {
                 switchSound.pause();
@@ -91,13 +104,13 @@ function pauseTimer() {
 function resetTimer() {
     pauseTimer();
     currentIndex = 0;
-    timeRemaining = 0;
+    timeRemaining = routine[currentIndex].duration;
     isRunning = false;
     startButton.textContent = "СТАРТ РУТИНЫ";
     resetButton.style.display = 'none';
     taskDisplay.textContent = "Нажмите 'Старт', чтобы начать";
-    timerDisplay.textContent = formatTime(0);
-    nextTaskInfo.textContent = "";
+    timerDisplay.textContent = formatTime(timeRemaining);
+    nextTaskInfo.textContent = `Далее: ${routine[currentIndex + 1].name}`;
     switchSound.pause();
     switchSound.currentTime = 0;
     finishSound.pause();
@@ -116,3 +129,5 @@ resetButton.addEventListener('click', resetTimer);
 
 timeRemaining = routine[currentIndex].duration;
 updateDisplay();
+
+taskDisplay.textContent = "Нажмите 'Старт', чтобы начать";
