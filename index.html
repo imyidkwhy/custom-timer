@@ -10,18 +10,31 @@
     <div class="container">
         <div class="header">
             <span class="logo-dot"></span>
-             <h1>Таймер с паттерном</h1>
+            <h1>Таймер с паттерном</h1>
         </div>
         
-        <h2 id="current-task" class="task-title"></h2>  
+        <h2 id="current-task" class="task-title"></h2>
         <div id="timer-display" class="timer-display">00:00:00</div>
+        
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
         
         <div class="controls">
             <button id="start-button" class="btn primary-btn">СТАРТ РУТИНЫ</button>
+            <button id="edit-button" class="btn secondary-btn">РЕДАКТИРОВАТЬ</button>
+            <button id="skip-button" class="btn secondary-btn" style="display:none;">ПРОПУСТИТЬ</button>
             <button id="reset-button" class="btn secondary-btn" style="display:none;">СБРОС</button>
         </div>
         
         <p class="next-task-info" id="next-task-info"></p>
+
+        <div id="routine-editor" style="display:none;">
+            <h3>Редактор Рутины (Задача;Часы)</h3>
+            <textarea id="routine-input" rows="8"></textarea>
+            <button id="save-routine-button" class="btn primary-btn">СОХРАНИТЬ И СБРОСИТЬ</button>
+            <p class="editor-tip">Каждая строка: Имя Задачи;Продолжительность в часах (например, Код;2).</p>
+        </div>
     </div>
 
     <script src="script.js"></script>
