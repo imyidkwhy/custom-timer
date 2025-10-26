@@ -5,6 +5,7 @@
     --spotify-green: #1DB954; 
     --text-white: #FFFFFF;
     --text-light: #B3B3B3;
+    --text-red: #ff4d4d;
 }
 
 body {
@@ -67,13 +68,35 @@ h1 {
     color: var(--spotify-green); 
 }
 
+#progress-bar-container {
+    height: 8px;
+    width: 100%;
+    background-color: var(--spotify-light-gray);
+    border-radius: 4px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+#progress-bar {
+    height: 100%;
+    width: 100%;
+    background-color: var(--spotify-green);
+    transform: translateX(-100%);
+    transition: transform 0.2s linear;
+    border-radius: 4px;
+}
+
 .controls {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .btn {
-    padding: 12px 25px;
-    font-size: 1.1em;
+    padding: 12px 20px;
+    font-size: 1.0em;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
@@ -95,10 +118,18 @@ h1 {
     background-color: #1ed760;  
 }
 
+.pause-btn {
+    background-color: #FFA500;
+    color: var(--spotify-black);
+}
+
+.pause-btn:hover {
+    background-color: #FFB31A;
+}
+
 .secondary-btn {
     background-color: var(--spotify-light-gray);
     color: var(--text-white);
-    margin-left: 10px;
 }
 
 .secondary-btn:hover {
@@ -110,4 +141,44 @@ h1 {
     font-size: 0.9em;
     color: var(--text-light);
     min-height: 20px;
+}
+
+#routine-editor {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--spotify-light-gray);
+    text-align: left;
+}
+
+#routine-editor h3 {
+    text-align: center;
+    color: var(--spotify-green);
+    margin-bottom: 15px;
+}
+
+#routine-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--spotify-light-gray);
+    background-color: var(--spotify-black);
+    color: var(--text-white);
+    font-family: monospace;
+    font-size: 1em;
+    resize: vertical;
+    border-radius: 4px;
+}
+
+.editor-tip {
+    font-size: 0.8em;
+    color: var(--text-light);
+    margin-top: 10px;
+    text-align: center;
+}
+
+.error-message {
+    color: var(--text-red);
+    font-weight: 700;
+    margin-bottom: 10px;
 }
