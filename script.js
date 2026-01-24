@@ -1,3 +1,4 @@
+
 let routine = [
     { name: "Development", duration: 120 * 60 },
     { name: "Reading", duration: 60 * 60 },
@@ -33,13 +34,14 @@ const progressEl = document.getElementById('progress-bar');
 const timelineEl = document.getElementById('timeline');
 const modEditor = document.getElementById('modal-editor');
 const modStats = document.getElementById('modal-stats');
+const resetRoutineBtn = document.getElementById('reset-routine-btn');
 
 function playSound(type) {
     const s = sounds[type];
     if (s) {
         s.pause();
         s.currentTime = 0;
-        s.play().catch(e => console.log(e));
+        s.play().catch(e => { });
     }
 }
 
@@ -79,10 +81,13 @@ function start() {
     if (state.isRunning) return;
     state.isRunning = true;
     state.lastTick = Date.now();
-    mainBtn.textContent = "Pause Session";
+    mainBtn.textContent = "Pause";
     skipBtn.classList.remove('hidden');
 
-    if (state.timeRemaining <= 0) state.timeRemaining = routine[state.currentIndex].duration;
+    if (state.timeRemaining <= 0 && routine[state.currentIndex]) {
+        state.timeRemaining = routine[state.currentIndex].duration;
+    }
+
     state.startTime = Date.now() - (routine[state.currentIndex].duration - state.timeRemaining) * 1000;
 
     state.timer = setInterval(() => {
@@ -104,7 +109,7 @@ function start() {
 function pause() {
     clearInterval(state.timer);
     state.isRunning = false;
-    mainBtn.textContent = "Resume Session";
+    mainBtn.textContent = "Resume";
     saveLocalState();
 }
 
@@ -121,16 +126,16 @@ function finishTask() {
         playSound('end');
         state.currentIndex = routine.length;
         updateDisplay();
-        mainBtn.textContent = "Restart Session";
+        mainBtn.textContent = "Restart Routine";
         skipBtn.classList.add('hidden');
     }
 }
 
-function resetRoutine() {
+function resetRoutineAction() {
     pause();
-    if (confirm("Reset routine to start?")) {
+    if (confirm("Reset entire routine to the first task?")) {
         state.currentIndex = 0;
-        state.timeRemaining = routine[0].duration;
+        state.timeRemaining = routine[0] ? routine[0].duration : 0;
         localStorage.removeItem(STORAGE_KEYS.STATE);
         updateDisplay();
         mainBtn.textContent = "Start Session";
@@ -152,8 +157,8 @@ function loadAll() {
     const savedState = localStorage.getItem(STORAGE_KEYS.STATE);
     if (savedState) {
         const s = JSON.parse(savedState);
-        state.currentIndex = s.idx || 0;
-        state.timeRemaining = s.rem || (routine[0] ? routine[0].duration : 0);
+        state.currentIndex = Math.min(s.idx || 0, routine.length);
+        state.timeRemaining = s.rem || (routine[state.currentIndex] ? routine[state.currentIndex].duration : 0);
     } else {
         state.timeRemaining = routine[0] ? routine[0].duration : 0;
     }
@@ -163,7 +168,7 @@ function loadAll() {
 function updateStatsDisplay() {
     const stats = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATS)) || {};
     const list = document.getElementById('stats-list');
-    list.innerHTML = Object.keys(stats).length ? '' : '<p class="text-white/20 text-center py-10 italic">No data yet</p>';
+    list.innerHTML = Object.keys(stats).length ? '' : '<p class="text-white/20 text-center py-10 italic">No analytics data</p>';
 
     for (let name in stats) {
         const hours = (stats[name] / 3600).toFixed(2);
@@ -172,8 +177,8 @@ function updateStatsDisplay() {
                         <span class="text-[11px] uppercase tracking-widest text-white/50">${name}</span>
                         <div class="flex items-center gap-3">
                             <span class="font-bold text-sm text-white">${hours} h</span>
-                            <button onclick="editStat('${name}')" class="text-white/20 hover:text-white edit-stat-btn" title="Edit hours">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            <button onclick="editStat('${name}')" class="text-white/20 hover:text-white edit-stat-btn" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                             </button>
                         </div>
                     </div>`;
@@ -185,7 +190,7 @@ window.editStat = function (taskName) {
     const currentSeconds = stats[taskName] || 0;
     const currentHours = (currentSeconds / 3600).toFixed(2);
 
-    const newHours = prompt(`Edit total hours for "${taskName}":`, currentHours);
+    const newHours = prompt(`Edit hours for "${taskName}":`, currentHours);
 
     if (newHours !== null && !isNaN(parseFloat(newHours)) && parseFloat(newHours) >= 0) {
         stats[taskName] = Math.round(parseFloat(newHours) * 3600);
@@ -196,7 +201,9 @@ window.editStat = function (taskName) {
 
 mainBtn.onclick = () => {
     if (state.currentIndex >= routine.length) {
-        resetRoutine();
+        state.currentIndex = 0;
+        state.timeRemaining = routine[0].duration;
+        start();
     } else {
         state.isRunning ? pause() : start();
     }
@@ -213,15 +220,19 @@ document.getElementById('edit-trigger').onclick = () => {
 document.getElementById('save-btn').onclick = () => {
     try {
         const val = document.getElementById('routine-input').value.trim();
+        if (!val) return;
         routine = val.split('\n').map(l => {
-            const [n, h] = l.split(';');
-            return { name: n.trim(), duration: parseFloat(h.replace(',', '.')) * 3600 };
+            const parts = l.split(';');
+            const n = parts[0];
+            const h = parts[1] || "1";
+            return { name: n.trim(), duration: Math.max(0, parseFloat(h.replace(',', '.')) * 3600) };
         });
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(routine));
-        state.currentIndex = 0; state.timeRemaining = routine[0].duration;
+        state.currentIndex = 0;
+        state.timeRemaining = routine[0] ? routine[0].duration : 0;
         modEditor.classList.add('hidden');
         updateDisplay();
-    } catch (e) { alert("Format Error!"); }
+    } catch (e) { alert("Format Error! Use: Name;Hours"); }
 };
 
 document.getElementById('stats-trigger').onclick = () => {
@@ -230,13 +241,13 @@ document.getElementById('stats-trigger').onclick = () => {
 };
 
 document.getElementById('clear-stats').onclick = () => {
-    if (confirm("Wipe all analytics data?")) {
+    if (confirm("Delete all analytics history?")) {
         localStorage.removeItem(STORAGE_KEYS.STATS);
-        modStats.classList.add('hidden');
+        updateStatsDisplay();
     }
 };
 
-document.getElementById('reset-routine-btn').onclick = resetRoutine;
+resetRoutineBtn.onclick = resetRoutineAction;
 
 document.querySelectorAll('#close-editor, #close-stats').forEach(b => b.onclick = () => {
     modEditor.classList.add('hidden');

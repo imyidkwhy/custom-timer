@@ -65,12 +65,11 @@
         class="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 hidden flex items-center justify-center p-6">
         <div class="glass-container max-w-md p-10 bg-zinc-900/50">
             <h3 class="text-xl font-bold mb-6 text-white">Routine Editor</h3>
-            <p class="text-[10px] text-white/30 mb-2 uppercase tracking-widest">Format: Task Name;Hours</p>
+            <p class="text-[10px] text-white/30 mb-2 uppercase tracking-widest">Format: Task;Hours (e.g. Work;1.5)</p>
             <textarea id="routine-input"
                 class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-mono text-white focus:outline-none mb-6"></textarea>
             <div class="flex gap-3">
-                <button id="save-btn" class="btn-action flex-1 py-4 rounded-xl text-[10px] uppercase">Save
-                    Changes</button>
+                <button id="save-btn" class="btn-action flex-1 py-4 rounded-xl text-[10px] uppercase">Save</button>
                 <button id="close-editor" class="btn-secondary px-6 rounded-xl text-[10px] uppercase">Cancel</button>
             </div>
         </div>
@@ -80,17 +79,19 @@
         class="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 hidden flex items-center justify-center p-6">
         <div class="glass-container w-full max-w-md p-10">
             <h3 class="text-xl font-bold mb-8 text-white">Analytics</h3>
-            <p class="text-[10px] text-white/30 mb-4 uppercase tracking-widest">Click pencil to edit hours</p>
+            <p class="text-[10px] text-white/30 mb-4 uppercase tracking-widest">Click the pencil to edit data</p>
             <div id="stats-list" class="space-y-4 max-h-64 overflow-y-auto custom-scrollbar pr-2 mb-8 text-white"></div>
             <div class="flex justify-between items-center">
                 <button id="clear-stats"
-                    class="text-red-500/50 hover:text-red-500 text-[10px] uppercase font-bold transition-colors">Reset
-                    All Data</button>
+                    class="text-red-500/50 hover:text-red-500 text-[10px] uppercase font-bold transition-colors">Clear
+                    Data</button>
                 <button id="close-stats" class="btn-secondary px-6 py-3 rounded-xl text-[10px] uppercase">Close</button>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="script.js">
+    </script>
 </body>
 
 </html>

@@ -125,7 +125,7 @@
         }
 
         .edit-stat-btn {
-            opacity: 0;
+            opacity: 0.3;
             transition: opacity 0.2s ease;
             cursor: pointer;
         }
