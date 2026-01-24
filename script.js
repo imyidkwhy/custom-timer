@@ -25,24 +25,23 @@ const sounds = {
     end: new Audio('finish.mp3')
 };
 
-function playSound(type) {
-    const s = sounds[type];
-    if (s) {
-        s.pause();
-        s.currentTime = 0;
-        s.play().catch(e => console.log("Audio play blocked or missing:", e));
-    }
-}
-
 const timerEl = document.getElementById('timer-display');
 const taskEl = document.getElementById('task-name');
 const mainBtn = document.getElementById('main-btn');
 const skipBtn = document.getElementById('skip-btn');
 const progressEl = document.getElementById('progress-bar');
 const timelineEl = document.getElementById('timeline');
-const nextLabel = document.getElementById('next-label');
 const modEditor = document.getElementById('modal-editor');
 const modStats = document.getElementById('modal-stats');
+
+function playSound(type) {
+    const s = sounds[type];
+    if (s) {
+        s.pause();
+        s.currentTime = 0;
+        s.play().catch(e => console.log(e));
+    }
+}
 
 function initTimeline() {
     timelineEl.innerHTML = '';
@@ -55,7 +54,7 @@ function initTimeline() {
 
 function updateDisplay() {
     const task = routine[state.currentIndex];
-    taskEl.textContent = task ? task.name : "Session Complete";
+    taskEl.textContent = task ? task.name : "Session Completed";
 
     const h = Math.floor(state.timeRemaining / 3600);
     const m = Math.floor((state.timeRemaining % 3600) / 60);
@@ -65,8 +64,6 @@ function updateDisplay() {
     const perc = task ? ((task.duration - state.timeRemaining) / task.duration) * 100 : 100;
     progressEl.style.width = `${perc}%`;
 
-    const next = routine[state.currentIndex + 1];
-    nextLabel.textContent = next ? `Next: ${next.name}` : "Last Task";
     initTimeline();
 }
 
@@ -82,7 +79,7 @@ function start() {
     if (state.isRunning) return;
     state.isRunning = true;
     state.lastTick = Date.now();
-    mainBtn.textContent = "Pause";
+    mainBtn.textContent = "Pause Session";
     skipBtn.classList.remove('hidden');
 
     if (state.timeRemaining <= 0) state.timeRemaining = routine[state.currentIndex].duration;
@@ -101,13 +98,13 @@ function start() {
         updateDisplay();
 
         if (state.timeRemaining <= 0) finishTask();
-    }, 1000);
+    }, 100);
 }
 
 function pause() {
     clearInterval(state.timer);
     state.isRunning = false;
-    mainBtn.textContent = "Resume";
+    mainBtn.textContent = "Resume Session";
     saveLocalState();
 }
 
@@ -125,6 +122,18 @@ function finishTask() {
         state.currentIndex = routine.length;
         updateDisplay();
         mainBtn.textContent = "Restart Session";
+        skipBtn.classList.add('hidden');
+    }
+}
+
+function resetRoutine() {
+    pause();
+    if (confirm("Reset routine to start?")) {
+        state.currentIndex = 0;
+        state.timeRemaining = routine[0].duration;
+        localStorage.removeItem(STORAGE_KEYS.STATE);
+        updateDisplay();
+        mainBtn.textContent = "Start Session";
         skipBtn.classList.add('hidden');
     }
 }
@@ -151,11 +160,43 @@ function loadAll() {
     updateDisplay();
 }
 
+function updateStatsDisplay() {
+    const stats = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATS)) || {};
+    const list = document.getElementById('stats-list');
+    list.innerHTML = Object.keys(stats).length ? '' : '<p class="text-white/20 text-center py-10 italic">No data yet</p>';
+
+    for (let name in stats) {
+        const hours = (stats[name] / 3600).toFixed(2);
+        list.innerHTML += `
+                    <div class="flex justify-between items-center py-4 border-b border-white/5 stat-row group">
+                        <span class="text-[11px] uppercase tracking-widest text-white/50">${name}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-sm text-white">${hours} h</span>
+                            <button onclick="editStat('${name}')" class="text-white/20 hover:text-white edit-stat-btn" title="Edit hours">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            </button>
+                        </div>
+                    </div>`;
+    }
+}
+
+window.editStat = function (taskName) {
+    const stats = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATS)) || {};
+    const currentSeconds = stats[taskName] || 0;
+    const currentHours = (currentSeconds / 3600).toFixed(2);
+
+    const newHours = prompt(`Edit total hours for "${taskName}":`, currentHours);
+
+    if (newHours !== null && !isNaN(parseFloat(newHours)) && parseFloat(newHours) >= 0) {
+        stats[taskName] = Math.round(parseFloat(newHours) * 3600);
+        localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(stats));
+        updateStatsDisplay();
+    }
+};
+
 mainBtn.onclick = () => {
     if (state.currentIndex >= routine.length) {
-        state.currentIndex = 0;
-        state.timeRemaining = routine[0].duration;
-        start();
+        resetRoutine();
     } else {
         state.isRunning ? pause() : start();
     }
@@ -177,36 +218,25 @@ document.getElementById('save-btn').onclick = () => {
             return { name: n.trim(), duration: parseFloat(h.replace(',', '.')) * 3600 };
         });
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(routine));
-        state.currentIndex = 0;
-        state.timeRemaining = routine[0].duration;
+        state.currentIndex = 0; state.timeRemaining = routine[0].duration;
         modEditor.classList.add('hidden');
         updateDisplay();
-    } catch (e) {
-        alert("Format Error!");
-    }
+    } catch (e) { alert("Format Error!"); }
 };
 
 document.getElementById('stats-trigger').onclick = () => {
-    const stats = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATS)) || {};
-    const list = document.getElementById('stats-list');
-    list.innerHTML = Object.keys(stats).length ? '' : '<p class="text-white/20 text-center py-10 italic">No data yet</p>';
-
-    for (let name in stats) {
-        list.innerHTML += `
-                    <div class="flex justify-between items-center py-4 border-b border-white/5">
-                        <span class="text-[11px] uppercase tracking-widest text-white/50">${name}</span>
-                        <span class="font-bold text-sm text-white">${(stats[name] / 3600).toFixed(2)} h</span>
-                    </div>`;
-    }
+    updateStatsDisplay();
     modStats.classList.remove('hidden');
 };
 
 document.getElementById('clear-stats').onclick = () => {
-    if (confirm("Clear all statistics?")) {
+    if (confirm("Wipe all analytics data?")) {
         localStorage.removeItem(STORAGE_KEYS.STATS);
         modStats.classList.add('hidden');
     }
 };
+
+document.getElementById('reset-routine-btn').onclick = resetRoutine;
 
 document.querySelectorAll('#close-editor, #close-stats').forEach(b => b.onclick = () => {
     modEditor.classList.add('hidden');

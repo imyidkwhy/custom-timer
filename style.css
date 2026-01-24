@@ -1,149 +1,144 @@
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap');
 
-  :root {
-      --bg-deep: #020202;
-      --glass-white: rgba(255, 255, 255, 0.04);
-      --border-white: rgba(255, 255, 255, 0.12);
-  }
+        :root {
+            --bg-deep: #020202;
+            --glass-white: rgba(255, 255, 255, 0.04);
+            --border-white: rgba(255, 255, 255, 0.12);
+        }
 
-  body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-deep);
-      margin: 0;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-  }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-  .mesh-gradient {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
-      background: var(--bg-deep);
-      overflow: hidden;
-  }
+        .mesh-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: var(--bg-deep);
+            overflow: hidden;
+        }
 
-  .blob {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: rgba(255, 255, 255, 0.02);
-      filter: blur(100px);
-      border-radius: 50%;
-      animation: move 25s infinite alternate ease-in-out;
-  }
+        .blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.02);
+            filter: blur(100px);
+            border-radius: 50%;
+            animation: move 25s infinite alternate ease-in-out;
+        }
 
-  @keyframes move {
-      0% {
-          transform: translate(-20%, -20%) scale(1);
-      }
+        @keyframes move {
+            0% {
+                transform: translate(-20%, -20%) scale(1);
+            }
 
-      100% {
-          transform: translate(30%, 30%) scale(1.1);
-      }
-  }
+            100% {
+                transform: translate(30%, 30%) scale(1.1);
+            }
+        }
 
-  .glass-container {
-      background: var(--glass-white);
-      backdrop-filter: blur(40px) saturate(180%);
-      -webkit-backdrop-filter: blur(40px) saturate(180%);
-      border: 1px solid var(--border-white);
-      border-radius: 40px;
-      box-shadow:
-          0 0 0 1px rgba(255, 255, 255, 0.03),
-          0 30px 60px rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 600px;
-      margin: 20px;
-      box-sizing: border-box;
-  }
+        .glass-container {
+            background: var(--glass-white);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border-white);
+            border-radius: 40px;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 30px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px;
+            box-sizing: border-box;
+        }
 
-  /* КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ ЦЕНТРИРОВАНИЯ И РАЗМЕРА */
-  .timer-wrapper {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem 0;
-  }
+        .timer-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 0;
+        }
 
-  #timer-display {
-      /* Моноширинный шрифт решает проблему прыгающих цифр */
-      font-family: 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      /* Адаптивный размер: не больше 8rem и не меньше 3rem */
-      font-size: clamp(3rem, 15vw, 7.5rem);
-      font-weight: 900;
-      line-height: 1;
-      color: white;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-      text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
-      /* Убираем все внешние отступы, которые могут толкать текст */
-      margin: 0;
-      padding: 0;
-  }
+        #timer-display {
+            font-family: 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: clamp(3rem, 15vw, 7.5rem);
+            font-weight: 900;
+            line-height: 1;
+            color: white;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+            margin: 0;
+            padding: 0;
+        }
 
-  .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-  .dot.active {
-      background: white;
-      box-shadow: 0 0 15px white;
-      transform: scale(1.4);
-  }
+        .dot.active {
+            background: white;
+            box-shadow: 0 0 15px white;
+            transform: scale(1.4);
+        }
 
-  .dot.completed {
-      background: rgba(255, 255, 255, 0.4);
-  }
+        .dot.completed {
+            background: rgba(255, 255, 255, 0.4);
+        }
 
-  .btn-action {
-      background: white;
-      color: black;
-      font-weight: 800;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  }
+        .btn-action {
+            background: white;
+            color: black;
+            font-weight: 800;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
-  .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
-  }
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
 
-  .btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.5);
-  }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+        }
 
-  #ai-suggestion-box {
-      background: rgba(255, 255, 255, 0.02);
-      border-left: 2px solid rgba(255, 255, 255, 0.1);
-  }
+        .edit-stat-btn {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
 
-  .ai-pulse {
-      animation: pulse-glow 2s infinite ease-in-out;
-  }
+        .stat-row:hover .edit-stat-btn {
+            opacity: 1;
+        }
 
-  @keyframes pulse-glow {
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
 
-      0%,
-      100% {
-          opacity: 0.5;
-      }
-
-      50% {
-          opacity: 1;
-      }
-  }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
